@@ -24,6 +24,7 @@ import lombok.Setter;
 @Table(name = "notification")
 @NoArgsConstructor
 public class NotificationVO {
+	
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "notification_seq")
     @SequenceGenerator(name = "notification_seq", sequenceName = "NOTIFICATION_SEQ", allocationSize = 1)

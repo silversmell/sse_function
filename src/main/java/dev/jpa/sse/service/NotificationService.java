@@ -1,11 +1,17 @@
 package dev.jpa.sse.service;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -60,10 +66,16 @@ public class NotificationService {
 
         return sseEmitter;
     }
+    
+    @Query(value = "SELECT contents, sender FROM (SELECT contents, sender, rownum as r FROM (SELECT contents, sender, id FROM notification WHERE sender = :sender ORDER BY created_at DESC, id DESC)) WHERE r <= 100", nativeQuery = true)
+    List<NotificationVO> findBySenderDesc(@Param("sender") String sender) {
+		return null;
+	}
 
 //    
     // 댓글 알림 - 게시글 작성자 에게
     public void notifyComment(int scmtno) {
+    	String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         ReplyVO post = replyRepository.findByScmtno(scmtno).orElseThrow(
                 () -> new IllegalArgumentException("댓글을 찾을 수 없습니다.")
         );
@@ -94,6 +106,7 @@ public class NotificationService {
             	System.out.println(account.get().getAccId());
             	eventData.put("sender", account.get().getAccId()); 
             	eventData.put("contents", post.getScmtcomment());
+            	eventData.put("createdAt", date.toString());
             	
                 sseEmitter.send(SseEmitter.event().name("addComment").data(eventData));
                 
@@ -102,6 +115,7 @@ public class NotificationService {
                 notification.setSender(account.get().getAccId());
                 notification.setContents(post.getScmtcomment());
                 notification.setShare_contentsVO(share_contents);
+                notification.setCreatedAt(date.toString());
                 notificationRepository.save(notification); //데이터 저장
                 
                 //알림개수 증가
@@ -116,4 +130,5 @@ public class NotificationService {
             }
         }
     }
+
 }

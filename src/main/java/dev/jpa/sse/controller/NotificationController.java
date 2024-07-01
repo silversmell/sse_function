@@ -3,7 +3,9 @@ package dev.jpa.sse.controller;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jackson.JsonObjectDeserializer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,4 +57,12 @@ public class NotificationController {
     	return ResponseEntity.ok().build(); // 응답으로 빈 200 OK를 반환
     	
     }
+    
+//    @GetMapping("/api/notification/read/{id}")
+//    public String read(@PathVariable("id") String acc_id) {
+//    	JSONObject json = new JSONObject();
+//    	
+//    	
+//    }
+    
 }
