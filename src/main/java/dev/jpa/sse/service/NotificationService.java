@@ -82,6 +82,9 @@ public class NotificationService {
     	
     	accountRepository.findByAccno(accno);
     	//System.out.println(accid);
+    	if(!NotificationController.sseEmitters.containsKey(accid)) {
+    		NotificationController.sseEmitters.put(accid, subscribe(accid));
+    	}
         if (NotificationController.sseEmitters.containsKey(accid)) {
             SseEmitter sseEmitter = NotificationController.sseEmitters.get(accid);
             //System.out.println("sseEmitters에 있음");
