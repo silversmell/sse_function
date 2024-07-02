@@ -16,7 +16,7 @@ import lombok.Setter;
 public class AccountVO {
     @Id
     @Column(name = "acc_no")
-    private int accno;
+    private Integer accno;
 
     @Column(name = "acc_id")
     private String accId = "";

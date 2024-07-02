@@ -24,10 +24,12 @@ import dev.jpa.sse.repository.AccountRepository;
 import dev.jpa.sse.repository.NotificationRepository;
 import dev.jpa.sse.repository.ReplyRepository;
 import dev.jpa.sse.repository.SconRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class NotificationService {
 	private static Map<String, Integer> notificationCounts = new HashMap<>();
     //private final PostRepository postRepository;
@@ -67,11 +69,15 @@ public class NotificationService {
         return sseEmitter;
     }
     
-    @Query(value = "SELECT contents, sender FROM (SELECT contents, sender, rownum as r FROM (SELECT contents, sender, id FROM notification WHERE sender = :sender ORDER BY created_at DESC, id DESC)) WHERE r <= 100", nativeQuery = true)
-    List<NotificationVO> findBySenderDesc(@Param("sender") String sender) {
-		return null;
-	}
+    
+    
+   public List<NotificationVO>findBySharecontents(int sconno){
+	   return notificationRepository.findBySharecontents_Sconno(sconno);
+   }
 
+   public List<Object[]> findNotificationDetailsByAccNo(int acc_no) {
+	return notificationRepository.findNotificationDetailsByAccNo(acc_no);
+   } 
 //    
     // 댓글 알림 - 게시글 작성자 에게
     public void notifyComment(int scmtno) {
@@ -86,13 +92,16 @@ public class NotificationService {
         Share_contentsVO share_contents = sconRepository.findBySconno(scon_no).orElseThrow(
         		 () -> new IllegalArgumentException("게시글을 찾을 수 없습니다.")
         );
-
     	Optional<Share_contentsVO>scon=sconRepository.findBySconno(scon_no);
     	int accno=scon.get().getAccno();
+        
+        AccountVO accountVO = accountRepository.findByAccno(accno).orElseThrow(
+       		 () -> new IllegalArgumentException("게시글을 찾을 수 없습니다.")
+       );
+
+
     	Optional<AccountVO> acc = accountRepository.findByAccno(accno);
     	String accid = acc.get().getAccId();
-    	
-    	accountRepository.findByAccno(accno);
     	//System.out.println(accid);
     	if(!NotificationController.sseEmitters.containsKey(accid)) {
     		NotificationController.sseEmitters.put(accid, subscribe(accid));
@@ -106,7 +115,6 @@ public class NotificationService {
             	System.out.println(account.get().getAccId());
             	eventData.put("sender", account.get().getAccId()); 
             	eventData.put("contents", post.getScmtcomment());
-            	eventData.put("createdAt", date.toString());
             	
                 sseEmitter.send(SseEmitter.event().name("addComment").data(eventData));
                 
@@ -114,8 +122,9 @@ public class NotificationService {
                 NotificationVO notification = new NotificationVO();
                 notification.setSender(account.get().getAccId());
                 notification.setContents(post.getScmtcomment());
-                notification.setShare_contentsVO(share_contents);
+                notification.setSharecontents(share_contents);
                 notification.setCreatedAt(date.toString());
+                notification.setAccount(accountVO);
                 notificationRepository.save(notification); //데이터 저장
                 
                 //알림개수 증가

@@ -31,13 +31,18 @@ public class NotificationVO {
     private Long id; //기본키
 
     private String sender; //발신자
+    
 
     private String createdAt; //보낸 시간
 
     private String contents;  // 채팅 메시지 내용 또는 댓글 내용
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "scmt_no")
-    private Share_contentsVO share_contentsVO; // 외래키: share_contents
+    @JoinColumn(name = "scon_no")
+    private Share_contentsVO sharecontents; // 외래키: share_contents //수신자 같고오는 VO
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "acc_no")
+    private AccountVO account; // 외래키: User
 }
 

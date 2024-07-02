@@ -3,10 +3,11 @@ package dev.jpa.sse.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.ibatis.annotations.Param;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import dev.jpa.sse.entity.NotificationVO;
 
@@ -14,7 +15,17 @@ import dev.jpa.sse.entity.NotificationVO;
 public interface NotificationRepository extends JpaRepository<NotificationVO, Long> {
     Optional<NotificationVO> findById(Long id);
     
-    @Query(value = "SELECT contents, sender FROM (SELECT contents, sender, rownum as r FROM (SELECT contents, sender, id FROM notification WHERE sender = :sender ORDER BY created_at DESC, id DESC)) WHERE r <= 100", nativeQuery = true)
-    List<NotificationVO> findBySenderDesc(@Param("sender") String sender);
+   
+    
+    List<NotificationVO> findBySharecontents_Sconno(int sconno);
+    
+    
+    @Transactional
+    @Query(value = "SELECT nt.contents, nt.sender, nt.created_at, nt.scon_no " +
+            "FROM notification nt " +
+            "INNER JOIN share_contents sc ON sc.scon_no = nt.scon_no " +
+            "INNER JOIN account ac ON ac.acc_no = sc.acc_no " +
+            "WHERE ac.acc_no = :acc_no", nativeQuery = true)
+    	List<Object[]> findNotificationDetailsByAccNo(@Param("acc_no") int acc_no);
 
-}
+	}

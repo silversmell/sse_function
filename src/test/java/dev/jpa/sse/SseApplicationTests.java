@@ -1,6 +1,7 @@
 package dev.jpa.sse;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.intThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import dev.jpa.sse.entity.NotificationVO;
 import dev.jpa.sse.entity.ReplyVO;
 import dev.jpa.sse.entity.Share_contentsVO;
 import dev.jpa.sse.repository.AccountRepository;
+import dev.jpa.sse.repository.NotificationRepository;
 import dev.jpa.sse.repository.ReplyRepository;
 import dev.jpa.sse.service.AccountService;
 import dev.jpa.sse.service.NotificationService;
@@ -35,7 +37,7 @@ class SseApplicationTests {
     private SconService sconService;
   
   @Autowired
-  private NotificationService notiService;
+  private NotificationRepository notiService;
   
   @Autowired
   private AccountService accountService;
@@ -64,10 +66,20 @@ class SseApplicationTests {
 //    }
     
     public void testSaveAndRetrieveNorice() {
-    	String sender = "user1";
-    	notiService.findBySenderDesc(sender);
+        // Given
+        int scon_no = 15;
 
-    
+        // When
+        List<NotificationVO> notifications = notiService.findBySharecontents_Sconno(scon_no);
+        
+        for(int i = 0;i<notifications.size();i++) {
+        	System.out.println(notifications.get(i).getAccount().getAccId() + " " +notifications.get(i).getSender());
+        }
+
+        // Then
+        assertThat(notifications).isNotNull();
+        assertThat(notifications).isNotEmpty();
+        assertThat(notifications).allMatch(notification -> notification.getSharecontents().getSconno() == scon_no);
     }
 
 }
