@@ -74,6 +74,14 @@ public class NotificationService {
    public List<NotificationVO>findBySharecontents(int sconno){
 	   return notificationRepository.findBySharecontents_Sconno(sconno);
    }
+   
+   public Optional<NotificationVO>findByAccnoAndCreatedAt(int accno, String createdAt){
+	   return notificationRepository.findByAccount_AccnoAndCreatedAt(accno, createdAt);
+   }
+   
+   public void deleteById(Long id) {
+	   notificationRepository.deleteById(id);
+   }
 
    public List<Object[]> findNotificationDetailsByAccNo(int acc_no) {
 	return notificationRepository.findNotificationDetailsByAccNo(acc_no);
@@ -96,7 +104,7 @@ public class NotificationService {
     	int accno=scon.get().getAccno();
         
         AccountVO accountVO = accountRepository.findByAccno(accno).orElseThrow(
-       		 () -> new IllegalArgumentException("게시글을 찾을 수 없습니다.")
+       		 () -> new IllegalArgumentException("회원을 찾을 수 없습니다.")
        );
 
 

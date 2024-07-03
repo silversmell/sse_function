@@ -14,8 +14,10 @@ import dev.jpa.sse.entity.NotificationVO;
 @Repository
 public interface NotificationRepository extends JpaRepository<NotificationVO, Long> {
     Optional<NotificationVO> findById(Long id);
-    
+
+    Optional<NotificationVO> findByAccount_AccnoAndCreatedAt(int accNo, String createdAt);
    
+    void deleteById(Long id);
     
     List<NotificationVO> findBySharecontents_Sconno(int sconno);
     

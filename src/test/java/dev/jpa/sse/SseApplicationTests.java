@@ -1,6 +1,7 @@
 package dev.jpa.sse;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.intThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 
@@ -10,6 +11,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
@@ -26,8 +29,13 @@ import dev.jpa.sse.service.ReplyService;
 import dev.jpa.sse.service.SconService;
 import jakarta.transaction.Transactional;
 
-@SpringBootTest
+//@SpringBootTest
+@DataJpaTest
+
 class SseApplicationTests {
+	
+    @Autowired
+    private TestEntityManager entityManager;
 
 	@Test
 	void contextLoads() {
@@ -37,7 +45,7 @@ class SseApplicationTests {
     private SconService sconService;
   
   @Autowired
-  private NotificationRepository notiService;
+  private NotificationRepository noticeService;
   
   @Autowired
   private AccountService accountService;
@@ -59,28 +67,31 @@ class SseApplicationTests {
 //    assertThat(reply).isNotEmpty();
 //
 //    }
-//    public void  testSaveAndRetrieveShare() {
-//    	Optional<Share_contentsVO> scon = sconService.findbySconno(15);
-//    	assertThat(scon).isPresent(); // Optional이 존재하는지 확인
-//    	//System.out.println(scon.isPresent());
-//    }
-    
-    public void testSaveAndRetrieveNorice() {
-        // Given
-        int scon_no = 15;
-
-        // When
-        List<NotificationVO> notifications = notiService.findBySharecontents_Sconno(scon_no);
-        
-        for(int i = 0;i<notifications.size();i++) {
-        	System.out.println(notifications.get(i).getAccount().getAccId() + " " +notifications.get(i).getSender());
-        }
-
-        // Then
-        assertThat(notifications).isNotNull();
-        assertThat(notifications).isNotEmpty();
-        assertThat(notifications).allMatch(notification -> notification.getSharecontents().getSconno() == scon_no);
+    public void  testSaveAndRetrieveShare() {
+//    	Optional<NotificationVO> notice = noticeService.findByAccount_AccnoAndCreatedAt(1, "2024-07-02 15:52:52");
+//    	assertThat(notice).isPresent(); // Optional이 존재하는지 확인
+//    	System.out.println(notice.get().getId());
+//    	System.out.println(notice.isPresent());
+    	
+    	noticeService.deleteById(73L);
     }
+    
+//    public void testSaveAndRetrieveNorice() {
+//        // Given
+//        int scon_no = 15;
+//
+//        // When
+//        List<NotificationVO> notifications = notiService.findBySharecontents_Sconno(scon_no);
+//        
+//        for(int i = 0;i<notifications.size();i++) {
+//        	System.out.println(notifications.get(i).getAccount().getAccId() + " " +notifications.get(i).getSender());
+//        }
+//
+//        // Then
+//        assertThat(notifications).isNotNull();
+//        assertThat(notifications).isNotEmpty();
+//        assertThat(notifications).allMatch(notification -> notification.getSharecontents().getSconno() == scon_no);
+//    }
 
 }
 

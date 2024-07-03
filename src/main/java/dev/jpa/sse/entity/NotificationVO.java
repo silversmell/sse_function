@@ -43,6 +43,8 @@ public class NotificationVO {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "acc_no")
-    private AccountVO account; // 외래키: User
+    private AccountVO account; // 외래키: Use
+    
+    private String mark = "F"; // 기본값 설정
 }
 

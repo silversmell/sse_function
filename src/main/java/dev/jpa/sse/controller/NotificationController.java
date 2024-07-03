@@ -45,9 +45,19 @@ public class NotificationController {
     public SseEmitter subscribe(@PathVariable("id") String id) {
     	System.out.println("들어옴");
         SseEmitter sseEmitter = notificationService.subscribe(id);
-
+        
         return sseEmitter;
     }
+    
+    @GetMapping("/api/notification/connect/{id}")
+    public String connect(@PathVariable("id") String id) {
+    	JSONObject json = new JSONObject();
+    	SseEmitter sseEmitter = notificationService.subscribe(id);
+    	
+    	json.put("emitter", sseEmitter);
+    	return json.toString();
+    }
+    
     @GetMapping("/api/notification/comment/{scmtno}")
     public ResponseEntity<Void>comment(@PathVariable("scmtno") int scmono) {
     	System.out.println("9093에서 호출");
@@ -60,12 +70,12 @@ public class NotificationController {
     	return ResponseEntity.ok().build(); // 응답으로 빈 200 OK를 반환
     	
     }
-    @GetMapping("/api/notification/read/{acc_no}")
+    @GetMapping("/api/notification/read/{acc_no}") //알림 게시판에 들어옴
     public String read(@PathVariable("acc_no") int acc_no) {
     	JSONObject json = new JSONObject();
     	JSONArray jsonArray = new JSONArray();
     	
-    	System.out.println("들어옴");
+    	//System.out.println("들어옴");
     	List<Object[]> list = notificationService.findNotificationDetailsByAccNo(acc_no);
     	
     	for (int i=0;i<list.size();i++) {
@@ -75,6 +85,7 @@ public class NotificationController {
     		    String sender = (String) rowData[1];   // 두 번째 컬럼(nt.sender)
     		    String createdAt = (String) rowData[2]; // 세 번째 컬럼(nt.created_at)
     		    int sconNo = Integer.parseInt(rowData[3].toString()); // 네 번째 컬럼(nt.scon_no)를 문자열로 가져와서 정수로 변환
+    		    System.out.println(rowData[0]);
     		    jsr.put("contents", contents);
     		    jsr.put("sender", sender);
     		    jsr.put("create_At", createdAt);
@@ -87,11 +98,12 @@ public class NotificationController {
     	    System.out.println("Scon No: " + sconNo);
     	    jsonArray.put(jsr);
     	}
-    	System.out.println(jsonArray.get(0).toString());
-    	System.out.println(jsonArray.get(1).toString());
+    	//System.out.println(jsonArray.get(0).toString());
+       //System.out.println(jsonArray.get(1).toString());
     	json.put("res", jsonArray);
         return json.toString();
     }
+    
 
 //    
 //    @GetMapping("/api/notification/read/{acc_no}")
