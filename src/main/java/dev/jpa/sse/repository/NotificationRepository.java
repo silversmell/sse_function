@@ -23,11 +23,11 @@ public interface NotificationRepository extends JpaRepository<NotificationVO, Lo
     
     
     @Transactional
-    @Query(value = "SELECT nt.contents, nt.sender, nt.created_at, nt.scon_no " +
+    @Query(value = "SELECT nt.contents, nt.sender, nt.created_at, nt.scon_no,nt.id " +
             "FROM notification nt " +
             "INNER JOIN share_contents sc ON sc.scon_no = nt.scon_no " +
             "INNER JOIN account ac ON ac.acc_no = sc.acc_no " +
-            "WHERE ac.acc_no = :acc_no", nativeQuery = true)
+            "WHERE ac.acc_no = :acc_no order by nt.id desc ", nativeQuery = true)
     	List<Object[]> findNotificationDetailsByAccNo(@Param("acc_no") int acc_no);
 
 	}
