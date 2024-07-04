@@ -83,12 +83,13 @@ public class NotificationService {
 	   notificationRepository.deleteById(id);
    }
 
-   public List<Object[]> findNotificationDetailsByAccNo(int acc_no) {
+   public List<Object[]> findNotificationDetailsByAccNo(int acc_no) { 
 	return notificationRepository.findNotificationDetailsByAccNo(acc_no);
    } 
 //    
     // 댓글 알림 - 게시글 작성자 에게
     public void notifyComment(int scmtno) {
+    	System.out.println("notifyComment에 들어옴");
     	String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         ReplyVO post = replyRepository.findByScmtno(scmtno).orElseThrow(
                 () -> new IllegalArgumentException("댓글을 찾을 수 없습니다.")
@@ -112,12 +113,14 @@ public class NotificationService {
     	String accid = acc.get().getAccId();
     	//System.out.println(accid);
     	if(!NotificationController.sseEmitters.containsKey(accid)) {
+    		System.out.println("sseEmitters 들어옴");
     		NotificationController.sseEmitters.put(accid, subscribe(accid));
     	}
         if (NotificationController.sseEmitters.containsKey(accid)) {
             SseEmitter sseEmitter = NotificationController.sseEmitters.get(accid);
             //System.out.println("sseEmitters에 있음");
             try {
+            	System.out.println("알림 들어옴");
             	Map<String,String> eventData = new HashMap<>();
             	eventData.put("message", "댓글이 달렸습니다.");
             	System.out.println(account.get().getAccId());

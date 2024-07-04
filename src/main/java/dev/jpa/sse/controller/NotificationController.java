@@ -49,14 +49,14 @@ public class NotificationController {
         return sseEmitter;
     }
     
-    @GetMapping("/api/notification/connect/{id}")
-    public String connect(@PathVariable("id") String id) {
-    	JSONObject json = new JSONObject();
-    	SseEmitter sseEmitter = notificationService.subscribe(id);
-    	
-    	json.put("emitter", sseEmitter);
-    	return json.toString();
-    }
+//    @GetMapping("/api/notification/connect/{id}")
+//    public String connect(@PathVariable("id") String id) {
+//    	JSONObject json = new JSONObject();
+//    	SseEmitter sseEmitter = notificationService.subscribe(id);
+//    	
+//    	json.put("emitter", sseEmitter);
+//    	return json.toString();
+//    }
     
     @GetMapping("/api/notification/comment/{scmtno}")
     public ResponseEntity<Void>comment(@PathVariable("scmtno") int scmono) {

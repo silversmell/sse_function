@@ -3,6 +3,7 @@ package dev.jpa.sse.entity;
 import java.sql.Date;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -34,7 +35,7 @@ public class NotificationVO {
     
 
     private String createdAt; //보낸 시간
-
+    
     private String contents;  // 채팅 메시지 내용 또는 댓글 내용
 
     @ManyToOne(fetch = FetchType.LAZY)

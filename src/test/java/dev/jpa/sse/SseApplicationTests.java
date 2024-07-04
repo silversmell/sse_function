@@ -73,7 +73,7 @@ class SseApplicationTests {
 //    	System.out.println(notice.get().getId());
 //    	System.out.println(notice.isPresent());
     	
-    	noticeService.deleteById(73L);
+    	
     }
     
 //    public void testSaveAndRetrieveNorice() {
